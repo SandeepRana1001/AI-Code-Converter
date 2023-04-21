@@ -1,0 +1,14 @@
+section {
+    margin-top: 100px;
+}
+
+.file-dropper-container {
+    border: 5px dotted #16a085;
+    height: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    letter-spacing: 2px;
+}

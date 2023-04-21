@@ -1,0 +1,13 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.themeBackground {
+  background: linear-gradient(to right, rgba(22, 160, 133, 0.9), rgba(16, 172, 132, 0.9));
+}
+
+body {
+  background-color: #2c3e50;
+  color: white;
+}
