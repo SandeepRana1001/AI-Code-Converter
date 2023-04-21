@@ -27,29 +27,19 @@ app.post('/convert', async (req, res, next) => {
         const response = await openai.createCompletion({
             model: 'text-davinci-003',
             prompt: `
-                    const example = (arr)=>{
-                        arr.map((item)=>{
-                            console.log(item)
-                        });
-                    };
+                    console.log('Hello World);
 
-                    The time complexity of this function is 
+                    Covert this code into Java 
                     ###
             `,
-            max_tokens: 64,
-            temperature: 0,
-            top_p: 1.0,
-            frequency_penalty: 0.0,
-            presence_penalty: 0.0,
-            stop: ["\n"],
+            max_tokens: 100,
         })
 
-        console.log(response.data.choices)
-        return res.send('Ok')
-        // return res.status(200).json({
-        //     success: true,
-        //     data: response
-        // })
+        return res.status(200).json({
+            success: true,
+            data: response.data.choices[0].text
+        })
+
     } catch (err) {
         console.log(err)
     }
