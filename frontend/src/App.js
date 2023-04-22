@@ -1,6 +1,6 @@
 import './App.css';
 import Header from './components/master/header/header';
-import CodeAttachment from './components/shared/codeAttachment';
+import CodeAttachment from './components/shared/codeAttachment/codeAttachment';
 
 function App() {
   return (
