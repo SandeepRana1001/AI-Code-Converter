@@ -15,7 +15,7 @@ const PreviewAttachment = ({ files, removeFile, toggleModal }) => {
                     files.map((file, index) => {
                         return (
                             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-6 mt-3" key={index}>
-                                <div className="card themeBackground">
+                                <div className="card previewCard themeBackground">
                                     <div className="card-header">
                                         <span>
                                             {file.name}

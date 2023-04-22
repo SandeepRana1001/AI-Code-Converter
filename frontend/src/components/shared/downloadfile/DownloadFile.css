@@ -1,0 +1,28 @@
+.downloadFile:hover span:last-child .fa-file-download {
+
+    animation-name: bounce;
+    animation-duration: 2s;
+    /* adjust as needed */
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}

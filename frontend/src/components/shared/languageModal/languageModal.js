@@ -102,7 +102,7 @@ const LanguageModel = ({ files }) => {
         formData.append("conver", language)
 
         const options = {
-            url: `${process.env.REACT_APP_BACKEND}/convert`,
+            url: `${process.env.REACT_APP_BACKEND}/file/fileconvert`,
             method: 'POST',
             headers: {
                 'Accept': 'multipart/form-data',
@@ -116,15 +116,34 @@ const LanguageModel = ({ files }) => {
 
         try {
 
-            response = await axios(options)
-            response.then((data) => {
-                console.log(data)
-                setFormSubmitted(false)
-            }).catch((err) => {
-                console.log('error')
-                console.log(err)
-                setFormSubmitted(false)
-            })
+            await fetch(options)
+                .then(async response => {
+                    console.log(await response.blob())
+                })
+                .then(blob => {
+                    // Create a download link
+                    const url = window.URL.createObjectURL(blob);
+                    console.log(url)
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'file.txt'); // Replace with the actual file name
+                    document.body.appendChild(link);
+                    link.click();
+
+                    // Clean up
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error downloading file:', error));
+
+            // response.then((data) => {
+            //     console.log(data)
+            //     setFormSubmitted(false)
+            // }).catch((err) => {
+            //     console.log('error')
+            //     console.log(err)
+            // })
+            setFormSubmitted(false)
         } catch (err) {
             showSnackBar(err.message, 'error')
             setFormSubmitted(false)

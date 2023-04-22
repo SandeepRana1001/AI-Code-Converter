@@ -1,12 +1,21 @@
+import { Switch, Route } from 'react-router-dom/cjs/react-router-dom';
 import './App.css';
 import Header from './components/master/header/header';
-import CodeAttachment from './components/shared/codeAttachment/codeAttachment';
+import Home from './pages/home';
+import Download from './pages/download';
 
 function App() {
   return (
     <div className="App">
       <Header />
-      <CodeAttachment />
+      <Switch>
+        <Route exact path='/'>
+          <Home />
+        </Route>
+        <Route exact path='/download'>
+          <Download />
+        </Route>
+      </Switch>
     </div>
   );
 }

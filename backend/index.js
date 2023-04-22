@@ -1,24 +1,6 @@
-// importing express
-const express = require('express')
+const app = require('./app')
 
-// importing openAI
-const { Configuration, OpenAIApi } = require('openai')
-
-// getting .env file configuration
-require('dotenv').config()
-
-// creating app
-const app = express()
-
-// Middleware to catch the incoming request
-app.use(express.json())
-
-// setting up open AI configuration
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_KEY
-})
-
-const openai = new OpenAIApi(configuration)
+const config = require('./config')
 
 app.post('/convert', async (req, res, next) => {
 
@@ -45,8 +27,9 @@ app.post('/convert', async (req, res, next) => {
     }
 })
 
+const PORT = config.PORT || 8081
 
-const PORT = process.env.PORT || 8081
+
 app.listen(PORT, () => {
     console.log(`Connectted to port ${PORT}`)
 })
