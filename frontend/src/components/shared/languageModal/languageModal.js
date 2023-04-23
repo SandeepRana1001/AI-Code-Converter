@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useSnackbar } from 'notistack'
 import axios from 'axios';
 import './languageModal.css'
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { $ } from 'react-jquery-plugin'
+
 
 const topProgrammingLanguages = {
     "JavaScript": ".js",
@@ -29,6 +32,7 @@ const LanguageModel = ({ files }) => {
     const [language, setLanguage] = useState(null)
     const [other, setOther] = useState(null)
     const [formSubmitted, setFormSubmitted] = useState(false)
+    const history = useHistory()
 
     const { enqueueSnackbar } = useSnackbar()
 
@@ -94,61 +98,56 @@ const LanguageModel = ({ files }) => {
         if (language === 'other') {
             setLanguage(other)
         }
+        // // Create a FormData object to store the selected files
 
-        const formData = new FormData()
-        for (const i of Object.keys(files)) {
-            formData.append("files", files[i]);
+
+
+        let formData = new FormData();
+        for (let file of files) {
+            formData.append("files", file);
         }
-        formData.append("conver", language)
+        formData.append('language', language);
+
 
         const options = {
             url: `${process.env.REACT_APP_BACKEND}/file/fileconvert`,
             method: 'POST',
             headers: {
                 'Accept': 'multipart/form-data',
-                'Content-Type': 'application/json'
             },
             body: formData
 
         }
 
-        let response;
 
         try {
 
-            await fetch(options)
-                .then(async response => {
-                    console.log(await response.blob())
-                })
-                .then(blob => {
-                    // Create a download link
-                    const url = window.URL.createObjectURL(blob);
-                    console.log(url)
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.setAttribute('download', 'file.txt'); // Replace with the actual file name
-                    document.body.appendChild(link);
-                    link.click();
+            const response = await axios.post(
+                `${process.env.REACT_APP_BACKEND}/file/fileconvert`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+            // const responseData = await response.json()
+            console.log(response)
 
-                    // Clean up
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(url);
-                })
-                .catch(error => console.error('Error downloading file:', error));
+            if (response.status === 200) {
+                // $('#languageModal').modal('hide')
 
-            // response.then((data) => {
-            //     console.log(data)
-            //     setFormSubmitted(false)
-            // }).catch((err) => {
-            //     console.log('error')
-            //     console.log(err)
-            // })
+                // history.push(`/download/${language}`)
+            }
             setFormSubmitted(false)
+
+
         } catch (err) {
             showSnackBar(err.message, 'error')
             setFormSubmitted(false)
-
         }
+
+        setFormSubmitted(false)
 
 
     }

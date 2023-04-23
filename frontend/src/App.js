@@ -12,7 +12,7 @@ function App() {
         <Route exact path='/'>
           <Home />
         </Route>
-        <Route exact path='/download'>
+        <Route exact path='/download/:language'>
           <Download />
         </Route>
       </Switch>

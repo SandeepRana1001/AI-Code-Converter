@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { zip } = require('zip');
 const archiver = require('archiver');
+const ApiError = require('../utils/APIError')
+
 
 const fileData = require('../services/index')
 const fileService = new fileData.FileServices()
@@ -12,68 +14,68 @@ class FileController {
         this.public = process.cwd() + '\\files'
     }
 
-    // protected route
-    // _getFile = (file) => {
 
-    //     const filePath = this.public + '\\' + file
-
-    //     console.log(filePath)
-
-    //     // Read the file
-
-    //     fs.readFile(filePath, 'utf8', (err, data) => {
-    //         if (err) {
-    //             console.error(err);
-    //             return;
-    //         }
-
-    //         // Copy the data to a variable
-    //         const fileData = data;
-
-    //         return fileData
-    //     })
-    // }
-
-    // Function to zip files
-    ;
-
+    convertFiles = async (req, res, next) => {
+        const uploadedFiles = fileService.getAllFileNames(this.public + `\\new`)
+        // const response = await fileService.readFileData()
+    }
 
     getFile = async (req, res, next) => {
 
-        const filePath = this.public + `\\1.js`
-        const data = await fileService.getAllFileNames(this.public)
-        console.log(data)
+        const { language } = req.params
 
-        // const fileStream = fs.createReadStream(filePath);
+        fileService.getAllFileNames(this.public + `\\new`).then((data) => {
 
-        // // Set the response headers for the file download
-        // res.setHeader('Content-Type', 'application/octet-stream');
-        // res.setHeader('Content-Disposition', 'attachment; filename=1.js'); // Replace with the desired filename
+            // Create an array of file streams
+            const fileStreams = data.map((filePath) => fs.createReadStream(this.public + `\\new\\` + filePath));
 
-        // // Pipe the file stream to the response
-        // fileStream.pipe(res);
+            // Set the appropriate headers for the response
+            res.setHeader('Content-Type', 'application/zip');
+            res.setHeader('Content-Disposition', `attachment; filename=${language}.zip`);
 
+            // Pipe the file streams to the response object
+            const archiveStream = archiver('zip');
+            archiveStream.pipe(res);
+            fileStreams.forEach((fileStream) => {
+                console.log(path.basename(fileStream.path))
+                archiveStream.append(fileStream, { name: path.basename(fileStream.path) });
+            });
+            archiveStream.finalize();
+        }).catch((err) => {
+            throw new ApiError(err, 500)
+        })
 
-        // Create an array of file streams
-        const fileStreams = data.map((filePath) => fs.createReadStream(this.public + `\\` + filePath));
-
-        // Set the appropriate headers for the response
-        res.setHeader('Content-Type', 'application/zip');
-        res.setHeader('Content-Disposition', 'attachment; filename=files.zip');
-
-        // Pipe the file streams to the response object
-        const archiveStream = archiver('zip');
-        archiveStream.pipe(res);
-        fileStreams.forEach((fileStream) => {
-            archiveStream.append(fileStream, { name: path.basename(fileStream.path) });
-        });
-        archiveStream.finalize();
 
     }
 
     fileConvert = async (req, res, next) => {
-        const filePath = this.public + `\\1.js`
-        res.download(filePath, '1.js')
+
+        let filePath = this.public + `\\uploaded\\`
+
+        fileService.clearFolders(this.public + `\\new\\`)
+
+        for (var i = 0; i < req.files.length; i++) {
+            filePath += req.files[i].originalname
+            const fileData = fileService.readFileData(filePath)
+            fileData.then((data) => {
+                console.log(data)
+            }).catch((err) => {
+                throw new APIError(err, 500)
+            })
+
+        }
+
+        fileService.clearFolders(this.public + `\\uploaded\\`)
+
+
+
+        // Return a response to the client
+        res.status(200).json({
+            success: true,
+            redirect: true
+        })
+
+        // res.download(filePath, '1.js')
     }
 
 }

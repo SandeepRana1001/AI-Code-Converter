@@ -28,19 +28,25 @@ const CodeAttachment = () => {
     }
 
     const fileHander = (event) => {
+        let num = 0
         const files = event.target.files
         const requestFiles = []
 
-
         for (let file of Object.keys(files)) {
+            if (num >= 5) {
+                showSnackBar('You can upload only 5 files at a time', 'error')
+                break;
+            }
             const type = files[file].type.split('/')[0]
 
             if (type.toLowerCase() !== 'text') {
                 showSnackBar(`Ignoring ${files[file].name}  due to invalid File Format`, 'error')
             } else {
+                num = num + 1
                 requestFiles.push(files[file])
             }
         }
+
         setFiles([...requestFiles])
     }
 
@@ -69,7 +75,7 @@ const CodeAttachment = () => {
                         <div className="col-xl-8 col-lg-8 col-md-10 col-sm-12 col-12">
                             <div  >
                                 <label htmlFor="file" className="file-dropper-container">
-                                    Add Your File(s) here
+                                    Add Your File(s) here - (Max Limit: 5)
                                 </label>
                                 {files.length === 0 &&
                                     <input type="file" id="file" hidden
