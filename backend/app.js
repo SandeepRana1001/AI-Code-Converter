@@ -5,8 +5,18 @@ const errorHandler = require('./utils/errorHandler');
 const ApiError = require('./utils/APIError')
 const route = require('./routes/index.router')
 
+const createFolder = require('./create-folders')
+
 // creating app
 const app = express()
+
+try {
+    createFolder('files')
+    createFolder('uploaded', 'files\\')
+    createFolder('new', 'files\\')
+} catch (err) {
+
+}
 
 app.use(helmet())
 
