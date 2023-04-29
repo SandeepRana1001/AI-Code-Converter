@@ -22,6 +22,12 @@ app.options("*", cors());
 
 app.use('/api', route)
 
+// const fileUpload = require('./middleware/file-upload')
+
+// app.use('/api/file/fileconvert', fileUpload.any('files'), (req, res, next) => {
+//     console.log('Yes')
+// })
+
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {

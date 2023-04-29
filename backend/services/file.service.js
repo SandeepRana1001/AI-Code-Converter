@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const config = require('../config')
+
 class FileServices {
 
     constructor() {
@@ -68,6 +70,41 @@ class FileServices {
             })
         }).catch((err) => {
             console.log(err)
+        })
+
+    }
+
+
+    getConvertedCode = async (code, convertTo) => {
+        const prompt = `${code} \n Convert the above code to ${convertTo}`
+        const completion = await config.openai.createCompletion({
+            model: "text-davinci-003",
+            prompt
+        });
+
+        console.log(completion.data.choices[0])
+
+        return completion.data.choices[0]
+
+
+    }
+
+
+    writeCodeToFile = async (content, filePath) => {
+
+        console.log(content)
+        console.log(filePath)
+
+        return new Promise((resolve, reject) => {
+            fs.writeFile(filePath, content, (err) => {
+                if (err) {
+                    reject(false)
+                    console.error('Error writing to file:', err);
+                } else {
+                    resolve(true)
+                    console.log('Content written to file successfully!');
+                }
+            });
         })
 
     }

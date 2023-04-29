@@ -7,22 +7,22 @@ import { $ } from 'react-jquery-plugin'
 
 
 const topProgrammingLanguages = {
-    "JavaScript": ".js",
-    "HTML": ".html",
-    "CSS": ".css",
-    "Python": ".py",
-    "Java": ".java",
-    "C++": ".cpp",
-    "C#": ".cs",
-    "TypeScript": ".ts",
-    "Go": ".go",
-    "Ruby": ".rb",
-    "Swift": ".swift",
-    "Kotlin": ".kt",
-    "Rust": ".rs",
-    "PHP": ".php",
-    "Shell Scripting (e.g. Bash)": ".sh",
-    "SQL": ".sql",
+    "javascript": ".js",
+    "html": ".html",
+    "css": ".css",
+    "python": ".py",
+    "java": ".java",
+    "c++": ".cpp",
+    "c#": ".cs",
+    "typescript": ".ts",
+    "go": ".go",
+    "ruby": ".rb",
+    "swift": ".swift",
+    "kotlin": ".kt",
+    "rust": ".rs",
+    "php": ".php",
+    "shell scripting (e.g. bash)": ".sh",
+    "sql": ".sql",
 };
 
 
@@ -31,6 +31,7 @@ const LanguageModel = ({ files }) => {
 
     const [language, setLanguage] = useState(null)
     const [other, setOther] = useState(null)
+    const [extension, setExtension] = useState('')
     const [formSubmitted, setFormSubmitted] = useState(false)
     const history = useHistory()
 
@@ -107,18 +108,7 @@ const LanguageModel = ({ files }) => {
             formData.append("files", file);
         }
         formData.append('language', language);
-
-
-        const options = {
-            url: `${process.env.REACT_APP_BACKEND}/file/fileconvert`,
-            method: 'POST',
-            headers: {
-                'Accept': 'multipart/form-data',
-            },
-            body: formData
-
-        }
-
+        formData.append('extension', topProgrammingLanguages[language.toLowerCase()]);
 
         try {
 
@@ -135,9 +125,9 @@ const LanguageModel = ({ files }) => {
             console.log(response)
 
             if (response.status === 200) {
-                // $('#languageModal').modal('hide')
+                $('#languageModal').modal('hide')
 
-                // history.push(`/download/${language}`)
+                history.push(`/download/${language}`)
             }
             setFormSubmitted(false)
 
