@@ -19,6 +19,38 @@ app.use(express.urlencoded({
 // enable cors
 app.use(cors());
 app.options("*", cors());
+// Allow all origins
+app.use(cors());
+
+// Allow specific origin
+app.use(cors({
+    origin: 'http://localhost:3000/'
+}));
+
+// Allow multiple origins
+app.use(cors({
+    origin: ['http://localhost:3000/', 'http://example2.com']
+}));
+
+// Allow all headers
+app.use(cors({
+    allowedHeaders: '*'
+}));
+
+// Allow specific headers
+app.use(cors({
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Allow all methods
+app.use(cors({
+    methods: '*'
+}));
+
+// Allow specific methods
+app.use(cors({
+    methods: ['GET', 'POST', 'PUT']
+}));
 
 app.use('/api', route)
 
