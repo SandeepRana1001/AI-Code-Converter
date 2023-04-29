@@ -28,15 +28,33 @@ class FileController {
             // Create an array of file streams
             const fileStreams = data.map((filePath) => fs.createReadStream(this.public + `\\new\\` + filePath));
 
+            const topProgrammingLanguages = {
+                "javascript": ".js",
+                "html": ".html",
+                "css": ".css",
+                "python": ".py",
+                "java": ".java",
+                "c++": ".cpp",
+                "c#": ".cs",
+                "typescript": ".ts",
+                "go": ".go",
+                "ruby": ".rb",
+                "swift": ".swift",
+                "kotlin": ".kt",
+                "rust": ".rs",
+                "php": ".php",
+                "shell scripting (e.g. bash)": ".sh",
+                "sql": ".sql",
+            };
+
             // Set the appropriate headers for the response
             res.setHeader('Content-Type', 'application/zip');
-            res.setHeader('Content-Disposition', `attachment; filename=${language}.zip`);
+            res.setHeader('Content-Disposition', `attachment; filename=${topProgrammingLanguages[language]}.zip`);
 
             // Pipe the file streams to the response object
             const archiveStream = archiver('zip');
             archiveStream.pipe(res);
             fileStreams.forEach((fileStream) => {
-                // console.log(path.basename(fileStream.path))
                 archiveStream.append(fileStream, { name: path.basename(fileStream.path) });
             });
             archiveStream.finalize();
@@ -52,6 +70,8 @@ class FileController {
         const response = await fileService.getConvertedCode('let a = 10', 'c++')
 
         const { language, extension } = req.body
+
+        const zipFileName = extension.split('.')[1]
 
 
         let newFilePath = this.public + `\\new\\`
@@ -80,12 +100,12 @@ class FileController {
                         newFilePath += fileNameWithoutExtension + extension
 
                         await fileService.getConvertedCode(data, language).then((converted_data) => {
-                            console.log('converted_code', converted_data)
+
+                            console.log(converted_data)
 
                             let response = fileService.writeCodeToFile(converted_data.text, newFilePath)
 
                             response.then((written) => {
-                                console.log(written)
 
 
                                 // clean up uploaded folder
@@ -102,7 +122,6 @@ class FileController {
                                 })
 
                             }).catch((err) => {
-                                // console.log(err)
                             })
                         })
 
@@ -111,7 +130,6 @@ class FileController {
 
 
                     }).catch((err) => {
-                        console.log(err)
                         throw new ApiError(500, err)
                     })
 
